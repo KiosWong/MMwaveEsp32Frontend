@@ -1,0 +1,20 @@
+{
+    "project_name":       "bootloader",
+    "project_path":       "D:/Program/esp-idf/esp-idf/components/bootloader/subproject",
+    "build_dir":          "E:/Projects/ESP32/esp32_mmwave_front/esp32_mmwave/build/bootloader",
+    "config_file":        "E:/Projects/ESP32/esp32_mmwave_front/esp32_mmwave/sdkconfig",
+    "config_defaults":    "",
+    "app_elf":            "bootloader.elf",
+    "app_bin":            "bootloader.bin",
+    "git_revision":       "v4.2-dirty",
+    "target":             "esp32",
+    "phy_data_partition": "",
+    "monitor_baud" :      "115200",
+    "monitor_toolprefix": "xtensa-esp32-elf-",
+    "config_environment" : {
+        "COMPONENT_KCONFIGS" : "D:/Program/esp-idf/esp-idf/components/efuse/Kconfig;D:/Program/esp-idf/esp-idf/components/esp32/Kconfig;D:/Program/esp-idf/esp-idf/components/esp_common/Kconfig;D:/Program/esp-idf/esp-idf/components/log/Kconfig;D:/Program/esp-idf/esp-idf/components/spi_flash/Kconfig",
+        "COMPONENT_KCONFIGS_PROJBUILD" : "D:/Program/esp-idf/esp-idf/components/bootloader/Kconfig.projbuild;D:/Program/esp-idf/esp-idf/components/esptool_py/Kconfig.projbuild;D:/Program/esp-idf/esp-idf/components/partition_table/Kconfig.projbuild"
+    },
+    "build_components" : [ "bootloader", "bootloader_support", "efuse", "esp32", "esp_common", "esp_rom", "esptool_py", "log", "main", "micro-ecc", "partition_table", "soc", "spi_flash", "xtensa", "" ],
+    "build_component_paths" : [ "D:/Program/esp-idf/esp-idf/components/bootloader", "D:/Program/esp-idf/esp-idf/components/bootloader_support", "D:/Program/esp-idf/esp-idf/components/efuse", "D:/Program/esp-idf/esp-idf/components/esp32", "D:/Program/esp-idf/esp-idf/components/esp_common", "D:/Program/esp-idf/esp-idf/components/esp_rom", "D:/Program/esp-idf/esp-idf/components/esptool_py", "D:/Program/esp-idf/esp-idf/components/log", "D:/Program/esp-idf/esp-idf/components/bootloader/subproject/main", "D:/Program/esp-idf/esp-idf/components/bootloader/subproject/components/micro-ecc", "D:/Program/esp-idf/esp-idf/components/partition_table", "D:/Program/esp-idf/esp-idf/components/soc", "D:/Program/esp-idf/esp-idf/components/spi_flash", "D:/Program/esp-idf/esp-idf/components/xtensa", "" ]
+}

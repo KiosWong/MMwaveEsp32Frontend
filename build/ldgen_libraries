@@ -31,6 +31,7 @@ E:/Projects/ESP32/esp32_mmwave_front/esp32_mmwave/build/esp-idf/newlib/libnewlib
 E:/Projects/ESP32/esp32_mmwave_front/esp32_mmwave/build/esp-idf/cxx/libcxx.a
 E:/Projects/ESP32/esp32_mmwave_front/esp32_mmwave/build/esp-idf/app_trace/libapp_trace.a
 E:/Projects/ESP32/esp32_mmwave_front/esp32_mmwave/build/esp-idf/asio/libasio.a
+E:/Projects/ESP32/esp32_mmwave_front/esp32_mmwave/build/esp-idf/bt/libbt.a
 E:/Projects/ESP32/esp32_mmwave_front/esp32_mmwave/build/esp-idf/cbor/libcbor.a
 E:/Projects/ESP32/esp32_mmwave_front/esp32_mmwave/build/esp-idf/coap/libcoap.a
 E:/Projects/ESP32/esp32_mmwave_front/esp32_mmwave/build/esp-idf/console/libconsole.a

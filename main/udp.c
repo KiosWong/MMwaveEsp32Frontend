@@ -19,12 +19,13 @@
  
 #define HOST_IP_ADDR "255.255.255.255"
 #define PORT         8080
-int sock = 0;
+int udp_sock;
+
 struct sockaddr_in dest_addr;
 
 int udp_init_socket(void)
 {
- 
+    int sock = 0;
     sock = socket(AF_INET,SOCK_DGRAM,0);
      printf("sock:%d\n",sock);
     if(sock < 0){
@@ -52,5 +53,25 @@ int udp_init_socket(void)
 void udp_send_packet(int udp_sock, const char *udp_tx_buffer, int tx_len)
 {
     int err = sendto(udp_sock, udp_tx_buffer, tx_len, 0, (struct sockaddr *)&dest_addr, sizeof(dest_addr));
+}
+
+void udp_data_upload(int mmwave_ad_value, signed short bmd101_ad_value)
+{
+	unsigned char udp_send_buf[7] = {0};
+
+	unsigned int bmd101_ad_value_upload = 0;
+	unsigned int mmwave_ad_value_upload = 0;
+	mmwave_ad_value_upload = (unsigned int)mmwave_ad_value;
+	bmd101_ad_value_upload = (unsigned int)bmd101_ad_value;
+	
+	udp_send_buf[0] = 0xAA;
+	udp_send_buf[1] = 0xAA;
+	udp_send_buf[2] =  (unsigned char)((bmd101_ad_value_upload&0x0000ff00) >> 8);
+	udp_send_buf[3] = (unsigned char )(bmd101_ad_value_upload&0x000000ff);
+	udp_send_buf[4] =  (unsigned char)((mmwave_ad_value&0x0000ff00) >> 8);
+	udp_send_buf[5] = (unsigned char )(mmwave_ad_value&0x000000ff);
+	udp_send_buf[6] = ~(udp_send_buf[2] + udp_send_buf[3] + udp_send_buf[4] + udp_send_buf[5]) + 1;
+	
+	udp_send_packet(udp_sock, (const char *)udp_send_buf, sizeof(udp_send_buf));
 }
  

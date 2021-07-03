@@ -34,26 +34,31 @@
 #include "adc.h"
 #include "wifi.h"
 #include "udp.h"
+#include "bmd101.h"
 
 
 #define BLINK_GPIO  GPIO_NUM_4
 
-int udp_sock;
+volatile int upload_flag;
+signed int bmd101_upload_value = 0;
 
+SemaphoreHandle_t xSemaphoreUpload;
 TimerHandle_t xTimerUser; // 定义句柄
 
 static void vAdcTimerCallBack();
+static void bmd101_uart_recv_task(void *arg);
+static void upload_task(void *arg);
 
 void app_main() {
 
 	//硬件延时
-	vTaskDelay(10000 / portTICK_PERIOD_MS);
+	vTaskDelay(10);
+	xSemaphoreUpload = xSemaphoreCreateBinary();
 
 	gpio_pad_select_gpio(GPIO_NUM_12);//Modoul_NRST
 	/* Set the GPIO as a push/pull output */
 	gpio_set_direction(GPIO_NUM_12, GPIO_MODE_OUTPUT);
 	gpio_set_level(GPIO_NUM_12, 1);
-
 
 	esp_err_t ret = nvs_flash_init();
 	if (ret == ESP_ERR_NVS_NO_FREE_PAGES || ret == ESP_ERR_NVS_NEW_VERSION_FOUND) {
@@ -63,43 +68,26 @@ void app_main() {
 	ESP_ERROR_CHECK(ret);
 
 	adc_init();
-    // 申请定时器， 配置
-    xTimerUser = xTimerCreate
-                   /*调试用， 系统不用*/
-                   ("Timer's name",
-                   /*定时溢出周期， 单位是任务节拍数*/
-                   10,   
-                   /*是否自动重载， 此处设置周期性执行*/
-                   pdTRUE,
-                   /*记录定时器溢出次数， 初始化零, 用户自己设置*/
-                  ( void * ) 0,
-                   /*回调函数*/
-                  vAdcTimerCallBack);
-
-     if( xTimerUser != NULL ) {
-        // 启动定时器， 0 表示不阻塞
-        xTimerStart( xTimerUser, 0 );
-    }
+	bmd101_ble_uart_init();
 
 	tcpip_adapter_init();
 	wifi_init_softap();
 	udp_sock = udp_init_socket();
-    vTaskDelay(1000 / portTICK_PERIOD_MS);
 
-	while(1) {
-
-	}
+	xTaskCreate(bmd101_uart_recv_task, "bmd101_uart_recv_task", 2048, NULL, 5, NULL);
+	// xTaskCreate(upload_task, "upload_task", 2048, NULL, 10, NULL);
 }
 
-
-void vAdcTimerCallBack()
+static void bmd101_uart_recv_task(void *arg)
 {
-	int adc_val = getadc();
-	unsigned char udp_send_buf[4] = {0};
-	printf("adc value:%d\r\n", adc_val);
-	udp_send_buf[3] = adc_val&0x000000ff;
-	udp_send_buf[2] = (adc_val&0x0000ff00) >> 8;
-	udp_send_buf[1] = (adc_val&0x00ff0000) >> 16;
-	udp_send_buf[0] = (adc_val&0xff000000) >> 24;
-	udp_send_packet(udp_sock, (const char *)udp_send_buf, 4);
+	uint8_t *data = (uint8_t *) malloc(BM101_BUF_SIZE);
+    while (1) {
+        // Read data from the UART
+        int len = uart_read_bytes(UART_NUM_1, data, BM101_BUF_SIZE, 5);
+		if(len > 0) {
+			bmd101_parse_packet((const char *)data, len);
+		}
+		
+		vTaskDelay(1);
+    }
 }
